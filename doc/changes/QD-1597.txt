@@ -1,0 +1,1 @@
+* [QD-1597] Leakage in InstrumentProfileCollector

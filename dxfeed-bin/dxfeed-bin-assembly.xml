@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  !++
+  QDS - Quick Data Signalling Library
+  !-
+  Copyright (C) 2002 - 2022 Devexperts LLC
+  !-
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  !__
+-->
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+    <id>assembly</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <moduleSets>
+        <moduleSet>
+            <useAllReactorProjects>true</useAllReactorProjects>
+            <includes>
+                <include>com.devexperts.qd:dxlib</include>
+                <include>com.devexperts.qd:dxfeed-api</include>
+                <include>com.devexperts.qd:qds</include>
+                <include>com.devexperts.qd:mars</include>
+                <include>com.devexperts.qd:qds-file</include>
+                <include>com.devexperts.qd:qds-monitoring</include>
+                <include>com.devexperts.qd:qds-tools</include>
+                <include>com.devexperts.qd:dxfeed-ondemand</include>
+                <include>com.devexperts.qd:dxlink-websocket</include>
+            </includes>
+            <binaries>
+                <unpack>false</unpack>
+                <includeDependencies>false</includeDependencies>
+                <outputDirectory>lib</outputDirectory>
+                <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            </binaries>
+        </moduleSet>
+        <moduleSet>
+            <useAllReactorProjects>true</useAllReactorProjects>
+            <includes>
+                <include>com.devexperts.qd:dxlib</include>
+                <include>com.devexperts.qd:dxfeed-api</include>
+                <include>com.devexperts.qd:qds</include>
+                <include>com.devexperts.qd:mars</include>
+                <include>com.devexperts.qd:qds-file</include>
+                <include>com.devexperts.qd:qds-monitoring</include>
+                <include>com.devexperts.qd:qds-tools</include>
+                <include>com.devexperts.qd:dxfeed-ondemand</include>
+                <include>com.devexperts.qd:dxlink-websocket</include>
+            </includes>
+            <binaries>
+                <attachmentClassifier>sources</attachmentClassifier>
+                <unpack>false</unpack>
+                <includeDependencies>false</includeDependencies>
+                <outputDirectory>src</outputDirectory>
+                <outputFileNameMapping>${artifact.artifactId}-src.zip</outputFileNameMapping>
+            </binaries>
+        </moduleSet>
+    </moduleSets>
+
+    <fileSets>
+        <fileSet>
+            <directory>files</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>..</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>ReleaseNotes.txt</include>
+                <include>LICENSE.txt</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+    <!--    to run com.devexperts.qd:dxlink-websocket-->
+    <!--    TODO Make sure there isn't a more universal solution (without manually keeping track of the dependency list). -->
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <includes>
+                <include>io.netty:netty-codec-http</include>
+                <include>io.netty:netty-common</include>
+                <include>io.netty:netty-buffer</include>
+                <include>io.netty:netty-transport</include>
+                <include>io.netty:netty-resolver</include>
+                <include>io.netty:netty-codec</include>
+                <include>io.netty:netty-handler</include>
+                <include>io.netty:netty-transport-native-unix-common</include>
+                <include>com.fasterxml.jackson.core:jackson-core</include>
+                <include>org.reflections:reflections</include>
+                <include>javax.xml.bind:jaxb-api</include>
+                <include>me.champeau.openbeans:openbeans</include>
+            </includes>
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+</assembly>

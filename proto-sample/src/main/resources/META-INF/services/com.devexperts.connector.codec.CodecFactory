@@ -1,0 +1,2 @@
+com.devexperts.connector.codec.xor.XorCodecFactory
+com.devexperts.connector.codec.zlib.ZlibCodecFactory

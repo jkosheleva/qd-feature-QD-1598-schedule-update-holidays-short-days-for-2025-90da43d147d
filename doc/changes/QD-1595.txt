@@ -1,0 +1,1 @@
+* [QD-1595] dxLib: Add support for Log4j2 bridge via SLF4j

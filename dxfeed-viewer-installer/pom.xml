@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  !++
+  QDS - Quick Data Signalling Library
+  !-
+  Copyright (C) 2002 - 2022 Devexperts LLC
+  !-
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  !__
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>QD</artifactId>
+        <groupId>com.devexperts.qd</groupId>
+        <version>3.338-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dxfeed-viewer-installer</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <deploy.skip>true</deploy.skip>
+        <license.skipCheckLicense>true</license.skipCheckLicense>
+        <!--
+        NOTE: beware of jgitflow plugin issues:
+        use of ${project.version} here would cause problems during release with jgitflow plugin dependency tracking.
+        jgitflow plugin will synchronize this value with main project version during release procedure automatically.
+        -->
+        <viewer.version>3.338-SNAPSHOT</viewer.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>install4j</id>
+            <activation>
+                <property>
+                    <name>install4j.home</name>
+                </property>
+            </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.devexperts.qd</groupId>
+                    <artifactId>dxfeed-viewer</artifactId>
+                    <version>${viewer.version}</version>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+
+                        <executions>
+                            <execution>
+                                <id>unpack-resources</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+
+                                <configuration>
+                                    <classifier>assembly</classifier>
+                                    <type>zip</type>
+                                    <includeArtifactIds>dxfeed-viewer</includeArtifactIds>
+                                    <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.sonatype.install4j</groupId>
+                        <artifactId>install4j-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <projectFile>${basedir}/viewer.install4j</projectFile>
+                            <attach>false</attach>
+                            <release>${viewer.version}</release>
+                            <failIfMissing>true</failIfMissing>
+
+                            <variables>
+                                <property>
+                                    <name>version</name>
+                                    <value>${viewer.version}</value>
+                                </property>
+                            </variables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <repositories>
+                <repository>
+                    <id>dxfeed-open</id>
+                    <url>https://dxfeed.jfrog.io/artifactory/maven-open</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+</project>

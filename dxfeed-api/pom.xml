@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  !++
+  QDS - Quick Data Signalling Library
+  !-
+  Copyright (C) 2002 - 2023 Devexperts LLC
+  !-
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  !__
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>QD</artifactId>
+        <groupId>com.devexperts.qd</groupId>
+        <version>3.338-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dxfeed-api</artifactId>
+    <packaging>jar</packaging>
+    <description>dxFeed API classes</description>
+
+    <properties>
+        <deploy.skip>false</deploy.skip>
+        <javadoc.skip>false</javadoc.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.devexperts.qd</groupId>
+            <artifactId>dxlib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- SHADED: shaded dependencies -->
+        <dependency>
+            <groupId>com.devexperts.qd</groupId>
+            <artifactId>dxfeed-promise</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- SHADED: end -->
+        <!-- Utility classes for testing -->
+        <dependency>
+            <groupId>com.devexperts.qd</groupId>
+            <artifactId>dxlib</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Specify dgen.config path for IDEA (it fails to change current dir for compiling) -->
+                    <compilerArgument>-Adgen.config=${project.basedir}/dgen.config</compilerArgument>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>schemagen</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <createJavaDocAnnotations>false</createJavaDocAnnotations>
+                    <transformSchemas>
+                        <transformSchema>
+                            <uri>http://schema.dxfeed.com/event</uri>
+                            <toPrefix>e</toPrefix>
+                            <toFile>dxfeed-event.xsd</toFile>
+                        </transformSchema>
+                    </transformSchemas>
+                    <sources>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/package-info.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/Quote.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/Trade.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/TradeETH.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/Summary.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/Profile.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/TimeAndSale.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/OptionSale.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/Order.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/AnalyticOrder.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/OtcMarketsOrder.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/market/SpreadOrder.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/candle/package-info.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/candle/Candle.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/misc/package-info.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/misc/Configuration.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/misc/Message.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/option/package-info.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/option/Greeks.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/option/Series.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/option/TheoPrice.java</source>
+                        <source>${project.build.sourceDirectory}/com/dxfeed/event/option/Underlying.java</source>
+                    </sources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptors>
+                        <descriptor>xsd-assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>true</createSourcesJar>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Class-Path>dxlib.jar</Class-Path>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <artifactSet>
+                                <includes>
+                                    <!-- SHADED: shaded dependencies
+                                    Keep in sync with 'shaded.war.excludes' property in parent pom & dependency list -->
+                                    <include>com.devexperts.qd:dxfeed-promise</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <windowtitle>dxFeed API ${project.version}</windowtitle>
+                    <links>
+                        <link>http://docs.dxfeed.com/dxlib/api/</link>
+                    </links>
+                    <additionalOptions>--allow-script-in-comments</additionalOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <!-- switch on dependency-driven aggregation -->
+                            <includeDependencySources>true</includeDependencySources>
+
+                            <dependencySourceIncludes>
+                                <!-- include ONLY dependencies I control -->
+                                <dependencySourceInclude>com.devexperts.qd:dxfeed-promise</dependencySourceInclude>
+                            </dependencySourceIncludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
